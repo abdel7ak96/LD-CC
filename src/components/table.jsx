@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -89,13 +89,26 @@ TablePaginationActions.propTypes = {
 export default function PokemonTable() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [rows, setRows] = useState([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     fetch('/pokemon.json')
       .then((res) => res.json())
-      .then((res) => setRows(res));
+      .then((res) => setData(res));
   }, []);
+
+  const rows = useMemo(() => {
+    return data.map((item) => ({
+      ...item,
+      power:
+        item.hp +
+        item.attack +
+        item.defense +
+        item.special_attack +
+        item.special_defense +
+        item.speed,
+    }));
+  }, [data]);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -124,6 +137,7 @@ export default function PokemonTable() {
             <TableCell align="right">Special Attack</TableCell>
             <TableCell align="right">Special Defense</TableCell>
             <TableCell align="right">Speed</TableCell>
+            <TableCell align="right">Power</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -158,6 +172,9 @@ export default function PokemonTable() {
               </TableCell>
               <TableCell style={{ width: 160 }} align="right">
                 {row.speed}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="right">
+                {row.power}
               </TableCell>
             </TableRow>
           ))}
