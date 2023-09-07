@@ -19,10 +19,10 @@ function App() {
         >
           <Box p={2}>
             <Grid container spacing={2}>
-              <Grid item xs="6">
+              <Grid item xs={6}>
                 <TextField fullWidth id="search" label="Search" />
               </Grid>
-              <Grid item xs="6">
+              <Grid item xs={6}>
                 <TextField fullWidth id="power" label="Power threshold" />
               </Grid>
             </Grid>

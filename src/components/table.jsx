@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -86,45 +86,16 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-const rows = [
-  {
-    id: 1,
-    name: 'Bulbasaur',
-    type: ['Grass', 'Poison'],
-    hp: 45,
-    attack: 49,
-    defense: 49,
-    special_attack: 65,
-    special_defense: 65,
-    speed: 45,
-  },
-  {
-    "id": 2,
-    "name": "Ivysaur",
-    "type": ["Grass", "Poison"],
-    "hp": 60,
-    "attack": 62,
-    "defense": 63,
-    "special_attack": 80,
-    "special_defense": 80,
-    "speed": 60
-  },
-  {
-    "id": 3,
-    "name": "Venusaur",
-    "type": ["Grass", "Poison"],
-    "hp": 80,
-    "attack": 82,
-    "defense": 83,
-    "special_attack": 100,
-    "special_defense": 100,
-    "speed": 80
-  },
-];
-
 export default function PokemonTable() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    fetch('/pokemon.json')
+      .then((res) => res.json())
+      .then((res) => setRows(res));
+  }, []);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
