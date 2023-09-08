@@ -1,72 +1,38 @@
-import {
-  Box,
-  Card,
-  Container,
-  Grid,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Container } from '@mui/material';
 import PokemonTable from './components/table';
-import { useState } from 'react';
+import { useState, createContext } from 'react';
+import Header from './components/header';
+
+export const MyContext = createContext();
 
 function App() {
-  const [search, setSearch] = useState('');
+  const [name, setName] = useState('');
   const [power, setPower] = useState('');
   const [minPower, setMinPower] = useState(0);
   const [maxPower, setMaxPower] = useState(0);
 
-  const minPowerHandler = (newValue) => {
-    setMinPower(newValue);
-  };
-  const maxPowerHandler = (newValue) => {
-    setMaxPower(newValue);
-  };
-
   return (
     <>
-      <Container maxWidth="lg">
-        {/* -- Selection card -- */}
-        <Card
-          variant="outlined"
-          sx={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}
-        >
-          <Box p={2}>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  id="search"
-                  label="Search"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  id="power"
-                  label="Power threshold"
-                  value={power}
-                  type="number"
-                  onChange={(e) => setPower(e.target.value)}
-                />
-              </Grid>
-            </Grid>
-            <Typography mt={4}>Min power: {minPower}</Typography>
-            <Typography>Max power: {maxPower}</Typography>
+      <MyContext.Provider
+        value={{
+          values: { name, power, minPower, maxPower },
+          setters: {
+            setName,
+            setPower,
+            setMinPower,
+            setMaxPower,
+          },
+        }}
+      >
+        <Container maxWidth="lg">
+          <Box my={4}>
+            <Header />
           </Box>
-        </Card>
-
-        {/* -- Table -- */}
-        <Box mt={5}>
-          <PokemonTable
-            search={search}
-            power={parseInt(power || '0')}
-            setMaxPower={maxPowerHandler}
-            setMinPower={minPowerHandler}
-          />
-        </Box>
-      </Container>
+          <Box>
+            <PokemonTable />
+          </Box>
+        </Container>
+      </MyContext.Provider>
     </>
   );
 }

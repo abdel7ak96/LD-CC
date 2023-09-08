@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -16,6 +16,7 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
+import { MyContext } from '../App';
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -86,15 +87,15 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-export default function PokemonTable({
-  search,
-  power,
-  setMinPower,
-  setMaxPower,
-}) {
+export default function PokemonTable() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [data, setData] = useState([]);
+
+  const {
+    values: { name, power },
+    setters: { setMaxPower, setMinPower },
+  } = useContext(MyContext);
 
   useEffect(() => {
     fetch('/pokemon.json')
@@ -106,7 +107,7 @@ export default function PokemonTable({
     return data
       .filter(
         (item) =>
-          item.name.toLowerCase().includes(search.toLowerCase()) || search == ''
+          item.name.toLowerCase().includes(name.toLowerCase()) || name == ''
       )
       .map((item) => ({
         ...item,
@@ -119,7 +120,7 @@ export default function PokemonTable({
           item.speed,
       }))
       .filter((item) => power == 0 || item.power >= power);
-  }, [data, search, power]);
+  }, [data, name, power]);
 
   useEffect(() => {
     const tmp = rows.slice(
@@ -234,10 +235,3 @@ export default function PokemonTable({
     </TableContainer>
   );
 }
-
-PokemonTable.propTypes = {
-  search: PropTypes.string.isRequired,
-  power: PropTypes.number.isRequired,
-  setMinPower: PropTypes.func.isRequired,
-  setMaxPower: PropTypes.func.isRequired,
-};
