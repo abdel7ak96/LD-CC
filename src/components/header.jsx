@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Box, Card, Grid, TextField, Typography } from '@mui/material';
-import { MyContext } from '../App';
+import { MyContext } from '../contexts/Provider';
 
 export default function Header() {
   const {
