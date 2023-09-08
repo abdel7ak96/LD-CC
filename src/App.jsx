@@ -7,11 +7,15 @@ import {
   Typography,
 } from '@mui/material';
 import PokemonTable from './components/table';
+import { useState } from 'react';
 
 function App() {
+  const [search, setSearch] = useState('');
+  const [power, setPower] = useState('');
+
   return (
     <>
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         {/* -- Selection card -- */}
         <Card
           variant="outlined"
@@ -20,10 +24,23 @@ function App() {
           <Box p={2}>
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                <TextField fullWidth id="search" label="Search" />
+                <TextField
+                  fullWidth
+                  id="search"
+                  label="Search"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
               </Grid>
               <Grid item xs={6}>
-                <TextField fullWidth id="power" label="Power threshold" />
+                <TextField
+                  fullWidth
+                  id="power"
+                  label="Power threshold"
+                  value={power}
+                  type='number'
+                  onChange={(e) => setPower(e.target.value)}
+                />
               </Grid>
             </Grid>
             <Typography mt={4}>Min power: 253</Typography>
@@ -33,7 +50,7 @@ function App() {
 
         {/* -- Table -- */}
         <Box mt={5}>
-          <PokemonTable />
+          <PokemonTable search={search} power={parseInt(power || '0')} />
         </Box>
       </Container>
     </>

@@ -86,9 +86,9 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-export default function PokemonTable() {
+export default function PokemonTable({ search, power }) {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -98,17 +98,23 @@ export default function PokemonTable() {
   }, []);
 
   const rows = useMemo(() => {
-    return data.map((item) => ({
-      ...item,
-      power:
-        item.hp +
-        item.attack +
-        item.defense +
-        item.special_attack +
-        item.special_defense +
-        item.speed,
-    }));
-  }, [data]);
+    return data
+      .filter(
+        (item) =>
+          item.name.toLowerCase().includes(search.toLowerCase()) || search == ''
+      )
+      .map((item) => ({
+        ...item,
+        power:
+          item.hp +
+          item.attack +
+          item.defense +
+          item.special_attack +
+          item.special_defense +
+          item.speed,
+      }))
+      .filter((item) => power == 0 || item.power >= power);
+  }, [data, search, power]);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -208,3 +214,8 @@ export default function PokemonTable() {
     </TableContainer>
   );
 }
+
+PokemonTable.propTypes = {
+  search: PropTypes.string.isRequired,
+  power: PropTypes.number.isRequired,
+};
